@@ -31,4 +31,13 @@ public interface SqlSession {
      * @return T
      */
     <T> T selectOne(String statementId, Object... params) throws Exception;
+
+    /**
+     * 使用jdk动态代理为dao接口生成代理对象并返回
+     *
+     * @param mapperClass Class<?>
+     * @param <T>         T
+     * @return T
+     */
+    <T> T getMapper(Class<?> mapperClass);
 }

@@ -1,10 +1,10 @@
-<mapper namespace="user">
+<mapper namespace="com.github.dao.IUserDao">
     <!--sql的唯一标识： namespace.id来组成 statementId-->
-    <select id="selectList" resultType="com.github.pojo.User">
+    <select id="findAll" resultType="com.github.pojo.User">
         select * from user
     </select>
 
-    <select id="selectOne" parameterType="com.github.pojo.User"
+    <select id="findByCondition" parameterType="com.github.pojo.User"
             resultType="com.github.pojo.User">
         select * from user where id = #{id} and username = #{username}
     </select>

@@ -3,6 +3,7 @@ package test;
 import java.io.InputStream;
 import java.util.List;
 
+import com.github.dao.IUserDao;
 import com.github.io.Resources;
 import com.github.pojo.User;
 import com.github.sqlsession.SqlSession;
@@ -29,10 +30,17 @@ public class IPersistenceTest {
         User user = new User();
         user.setId(1L);
         user.setUsername("张三");
-        // User result = sqlSession.selectOne("user.selectOne", user);
+        // User result = sqlSession.selectOne("com.github.dao.IUserDao.findByCondition", user);
         // Assert.assertNotNull(result);
-        List<User> userList = sqlSession.selectList("user.selectList");
-        Assert.assertNotNull(userList);
+        // List<User> userList = sqlSession.selectList("com.github.dao.IUserDao.findAll");
+        // Assert.assertNotNull(userList);
+
+        IUserDao userDao = sqlSession.getMapper(IUserDao.class);
+        List<User> all = userDao.findAll();
+        Assert.assertNotNull(all);
+        User condition = userDao.findByCondition(user);
+        Assert.assertNotNull(condition);
+
     }
 
 }
