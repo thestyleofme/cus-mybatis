@@ -1,0 +1,11 @@
+<mapper namespace="user">
+    <!--sql的唯一标识： namespace.id来组成 statementId-->
+    <select id="selectList" resultType="com.github.pojo.User">
+        select * from user
+    </select>
+
+    <select id="selectOne" parameterType="com.github.pojo.User"
+            resultType="com.github.pojo.User">
+        select * from user where id = #{id} and username = #{username}
+    </select>
+</mapper>
