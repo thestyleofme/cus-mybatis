@@ -1,9 +1,8 @@
-package com.github.config;
+package com.github.cus.mybatis.config;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.github.utils.ParameterMapping;
+import com.github.cus.mybatis.utils.ParameterMapping;
 
 /**
  * <p>
@@ -22,7 +21,7 @@ public class BoundSql {
     /**
      * #{}占位符里面的值
      */
-    private List<ParameterMapping> parameterMappingList = new ArrayList<>();
+    private List<ParameterMapping> parameterMappingList;
 
     public BoundSql(String sqlText, List<ParameterMapping> parameterMappingList) {
         this.sqlText = sqlText;

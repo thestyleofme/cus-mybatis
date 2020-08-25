@@ -1,23 +1,22 @@
-package com.github.sqlsession;
+package com.github.cus.mybatis.sqlsession;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.github.config.BoundSql;
-import com.github.pojo.Configuration;
-import com.github.pojo.MappedStatement;
-import com.github.utils.CloseUtil;
-import com.github.utils.GenericTokenParser;
-import com.github.utils.ParameterMapping;
-import com.github.utils.ParameterMappingTokenHandler;
+import com.github.cus.mybatis.config.BoundSql;
+import com.github.cus.mybatis.pojo.Configuration;
+import com.github.cus.mybatis.pojo.MappedStatement;
+import com.github.cus.mybatis.utils.CloseUtil;
+import com.github.cus.mybatis.utils.GenericTokenParser;
+import com.github.cus.mybatis.utils.ParameterMapping;
+import com.github.cus.mybatis.utils.ParameterMappingTokenHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -28,6 +27,8 @@ import com.github.utils.ParameterMappingTokenHandler;
  * @since 1.0.0
  */
 public class SimpleExecutor implements Executor {
+
+    private final Logger logger = LoggerFactory.getLogger(SimpleExecutor.class);
 
     @SuppressWarnings("unchecked")
     @Override
@@ -42,8 +43,11 @@ public class SimpleExecutor implements Executor {
             String sql = mappedStatement.getSql();
             // 转换sql语句 select * from user where id = ? and username = ? 还需对#{}里的值进行储存
             BoundSql boundSql = getBoundSql(sql);
+            String sqlText = boundSql.getSqlText();
+            logger.debug("sql: {}", sqlText);
+            logger.debug("params: {}", boundSql.getParameterMappingList());
             // 获取预处理对象
-            preparedStatement = connection.prepareStatement(boundSql.getSqlText());
+            preparedStatement = connection.prepareStatement(sqlText);
             // 设置参数
             String parameterType = mappedStatement.getParameterType();
             Class<?> parameterTypeClazz = genClass(parameterType);
@@ -87,6 +91,11 @@ public class SimpleExecutor implements Executor {
             CloseUtil.close(resultSet, preparedStatement, connection);
         }
         return (List<E>) list;
+    }
+
+    @Override
+    public int update(MappedStatement ms, Object... params) throws SQLException {
+        return 1;
     }
 
     private Class<?> genClass(String className) throws ClassNotFoundException {

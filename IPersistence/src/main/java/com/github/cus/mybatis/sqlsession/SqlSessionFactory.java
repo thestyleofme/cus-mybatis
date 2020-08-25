@@ -1,4 +1,4 @@
-package com.github.sqlsession;
+package com.github.cus.mybatis.sqlsession;
 
 /**
  * <p>

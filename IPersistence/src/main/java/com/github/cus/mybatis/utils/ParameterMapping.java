@@ -1,4 +1,4 @@
-package com.github.utils;
+package com.github.cus.mybatis.utils;
 
 /**
  * <p>
@@ -25,5 +25,12 @@ public class ParameterMapping {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @Override
+    public String toString() {
+        return "ParameterMapping{" +
+                "content='" + content + '\'' +
+                '}';
     }
 }

@@ -1,6 +1,6 @@
-package com.github.sqlsession;
+package com.github.cus.mybatis.sqlsession;
 
-import com.github.pojo.Configuration;
+import com.github.cus.mybatis.pojo.Configuration;
 
 /**
  * <p>

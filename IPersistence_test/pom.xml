@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github</groupId>
+    <groupId>com.github.cus.mybatis</groupId>
     <artifactId>IPersistence_test</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
@@ -19,7 +19,7 @@
     <dependencies>
         <!--引入自定义持久层框架依赖-->
         <dependency>
-            <groupId>com.github</groupId>
+            <groupId>com.github.cus.mybatis</groupId>
             <artifactId>IPersistence</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>

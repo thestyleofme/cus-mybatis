@@ -1,4 +1,4 @@
-package com.github.io;
+package com.github.cus.mybatis.io;
 
 import java.io.InputStream;
 

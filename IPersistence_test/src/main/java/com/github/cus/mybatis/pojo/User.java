@@ -1,4 +1,4 @@
-package com.github.pojo;
+package com.github.cus.mybatis.pojo;
 
 /**
  * <p>

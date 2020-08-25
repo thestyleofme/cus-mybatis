@@ -1,9 +1,9 @@
-package com.github.sqlsession;
+package com.github.cus.mybatis.sqlsession;
 
 import java.io.InputStream;
 
-import com.github.config.XMLConfigBuilder;
-import com.github.pojo.Configuration;
+import com.github.cus.mybatis.config.XMLConfigBuilder;
+import com.github.cus.mybatis.pojo.Configuration;
 import org.dom4j.DocumentException;
 
 /**

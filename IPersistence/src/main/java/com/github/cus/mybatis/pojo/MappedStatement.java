@@ -1,4 +1,6 @@
-package com.github.pojo;
+package com.github.cus.mybatis.pojo;
+
+import com.github.cus.mybatis.constants.SqlCommandType;
 
 /**
  * <p>
@@ -21,16 +23,20 @@ public class MappedStatement {
     /**
      * 参数类型
      */
-    private  String parameterType;
+    private String parameterType;
     /**
      * sql语句
      */
     private String sql;
+    /**
+     * sql命令类型，如INSERT, UPDATE, DELETE, SELECT
+     */
+    private SqlCommandType sqlCommandType;
 
-    public MappedStatement(String id, String parameterType,String resultType , String sql) {
+    public MappedStatement(String id, String parameterType, String resultType, String sql) {
         this.id = id;
-        this.parameterType = parameterType;
         this.resultType = resultType;
+        this.parameterType = parameterType;
         this.sql = sql;
     }
 
@@ -67,5 +73,13 @@ public class MappedStatement {
 
     public void setSql(String sql) {
         this.sql = sql;
+    }
+
+    public SqlCommandType getSqlCommandType() {
+        return sqlCommandType;
+    }
+
+    public void setSqlCommandType(SqlCommandType sqlCommandType) {
+        this.sqlCommandType = sqlCommandType;
     }
 }

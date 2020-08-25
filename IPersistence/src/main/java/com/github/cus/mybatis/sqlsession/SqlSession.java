@@ -1,6 +1,8 @@
-package com.github.sqlsession;
+package com.github.cus.mybatis.sqlsession;
 
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -19,6 +21,7 @@ public interface SqlSession {
      * @param params      可变参数
      * @param <E>         E
      * @return List<E>
+     * @throws Exception Exception
      */
     <E> List<E> selectList(String statementId, Object... params) throws Exception;
 
@@ -29,8 +32,19 @@ public interface SqlSession {
      * @param params      可变参数
      * @param <T>         T
      * @return T
+     * @throws Exception Exception
      */
     <T> T selectOne(String statementId, Object... params) throws Exception;
+
+    /**
+     * Execute an insert statement.
+     *
+     * @param statementId Unique identifier matching the statement to execute.
+     * @param params      params
+     * @return int The number of rows affected by the insert.
+     */
+    int update(String statementId, Object... params) throws SQLException;
+
 
     /**
      * 使用jdk动态代理为dao接口生成代理对象并返回

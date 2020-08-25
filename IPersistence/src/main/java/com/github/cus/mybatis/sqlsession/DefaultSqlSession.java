@@ -1,12 +1,13 @@
-package com.github.sqlsession;
+package com.github.cus.mybatis.sqlsession;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
+import java.sql.SQLException;
 import java.util.List;
 
-import com.github.pojo.Configuration;
-import com.github.pojo.MappedStatement;
+import com.github.cus.mybatis.pojo.Configuration;
+import com.github.cus.mybatis.pojo.MappedStatement;
 
 /**
  * <p>
@@ -19,14 +20,15 @@ import com.github.pojo.MappedStatement;
 public class DefaultSqlSession implements SqlSession {
 
     private final Configuration configuration;
+    private final SimpleExecutor simpleExecutor;
 
     public DefaultSqlSession(Configuration configuration) {
         this.configuration = configuration;
+        simpleExecutor = new SimpleExecutor();
     }
 
     @Override
     public <E> List<E> selectList(String statementId, Object... params) throws Exception {
-        SimpleExecutor simpleExecutor = new SimpleExecutor();
         MappedStatement mappedStatement = configuration.getMappedStatementMap().get(statementId);
         return simpleExecutor.query(configuration, mappedStatement, params);
     }
@@ -39,6 +41,12 @@ public class DefaultSqlSession implements SqlSession {
             return (T) objects.get(0);
         }
         throw new IllegalStateException("查询结果为空或返回结果过多");
+    }
+
+    @Override
+    public int update(String statementId, Object... params) throws SQLException {
+        MappedStatement mappedStatement = configuration.getMappedStatementMap().get(statementId);
+        return simpleExecutor.update(mappedStatement, params);
     }
 
     @SuppressWarnings("unchecked")
@@ -55,12 +63,32 @@ public class DefaultSqlSession implements SqlSession {
                     String statementId = className + "." + methodName;
                     // 获取被调用方法的返回值类型
                     Type type = method.getGenericReturnType();
-                    // 简单判断下 若返回值 泛型类型参数化 即返回List<E> 否则就是实体对象
-                    if (type instanceof ParameterizedType) {
-                        return selectList(statementId, args);
+                    MappedStatement mappedStatement = configuration.getMappedStatementMap().get(statementId);
+                    // 根据不同的sqlCommandType，调用不同的方法
+                    switch (mappedStatement.getSqlCommandType()) {
+                        case SELECT:
+                            return doSelect(statementId, type, args);
+                        case INSERT:
+                        case DELETE:
+                        case UPDATE:
+                            return doUpdate(statementId, args);
+                        default:
+                            // 不会到达这里
+                            throw new IllegalStateException("invalid sqlCommandType");
                     }
-                    return selectOne(statementId, args);
                 });
         return (T) proxyInstance;
+    }
+
+    private Object doUpdate(String statementId, Object[] args) throws SQLException {
+        return update(statementId, args);
+    }
+
+    private Object doSelect(String statementId, Type type, Object[] args) throws Exception {
+        // 简单判断下 若返回值 泛型类型参数化 即返回List<E> 否则就是实体对象
+        if (type instanceof ParameterizedType) {
+            return selectList(statementId, args);
+        }
+        return selectOne(statementId, args);
     }
 }

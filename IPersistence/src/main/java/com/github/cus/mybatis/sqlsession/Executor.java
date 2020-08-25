@@ -1,9 +1,10 @@
-package com.github.sqlsession;
+package com.github.cus.mybatis.sqlsession;
 
+import java.sql.SQLException;
 import java.util.List;
 
-import com.github.pojo.Configuration;
-import com.github.pojo.MappedStatement;
+import com.github.cus.mybatis.pojo.Configuration;
+import com.github.cus.mybatis.pojo.MappedStatement;
 
 /**
  * <p>
@@ -25,4 +26,14 @@ public interface Executor {
      * @return List<E>
      */
     <E> List<E> query(Configuration configuration, MappedStatement mappedStatement, Object... params) throws Exception;
+
+    /**
+     * jdbc 删除/更新/插入
+     *
+     * @param ms     MappedStatement
+     * @param params Object...
+     * @return int
+     * @throws SQLException SQLException
+     */
+    int update(MappedStatement ms, Object... params) throws SQLException;
 }
