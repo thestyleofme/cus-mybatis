@@ -3,7 +3,10 @@ package com.github.cus.mybatis.sqlsession;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -40,28 +43,7 @@ public class SimpleExecutor implements Executor {
         try {
             // 获取Connection
             connection = configuration.getDataSource().getConnection();
-            String sql = mappedStatement.getSql();
-            // 转换sql语句 select * from user where id = ? and username = ? 还需对#{}里的值进行储存
-            BoundSql boundSql = getBoundSql(sql);
-            String sqlText = boundSql.getSqlText();
-            logger.debug("sql: {}", sqlText);
-            logger.debug("params: {}", boundSql.getParameterMappingList());
-            // 获取预处理对象
-            preparedStatement = connection.prepareStatement(sqlText);
-            // 设置参数
-            String parameterType = mappedStatement.getParameterType();
-            Class<?> parameterTypeClazz = genClass(parameterType);
-            List<ParameterMapping> parameterMappingList = boundSql.getParameterMappingList();
-            for (int i = 0, size = parameterMappingList.size(); i < size; i++) {
-                ParameterMapping parameterMapping = parameterMappingList.get(i);
-                String content = parameterMapping.getContent();
-                // 反射
-                Field field = parameterTypeClazz.getDeclaredField(content);
-                // 设置暴力访问 防止是私有属性
-                field.setAccessible(true);
-                Object obj = field.get(params[0]);
-                preparedStatement.setObject(i + 1, obj);
-            }
+            preparedStatement = getPreparedStatement(connection, mappedStatement, params);
             // 执行
             resultSet = preparedStatement.executeQuery();
             // 封装返回结果集
@@ -94,8 +76,56 @@ public class SimpleExecutor implements Executor {
     }
 
     @Override
-    public int update(MappedStatement ms, Object... params) throws SQLException {
-        return 1;
+    public int update(Configuration configuration, MappedStatement mappedStatement, Object... params) throws Exception {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            // 获取Connection
+            connection = configuration.getDataSource().getConnection();
+            preparedStatement = getPreparedStatement(connection, mappedStatement, params);
+            return preparedStatement.executeUpdate();
+        } finally {
+            CloseUtil.close(preparedStatement, connection);
+        }
+    }
+
+    private PreparedStatement getPreparedStatement(Connection connection, MappedStatement mappedStatement, Object... params) throws Exception {
+        // 获取预处理对象
+        String sql = mappedStatement.getSql();
+        // 转换sql语句 select * from user where id = ? and username = ? 还需对#{}里的值进行储存
+        BoundSql boundSql = getBoundSql(sql);
+        String sqlText = boundSql.getSqlText();
+        logger.debug("sql: {}", sqlText);
+        logger.debug("params: {}", boundSql.getParameterMappingList());
+        logger.debug("value: {}", params[0]);
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlText);
+        // 设置参数
+        String parameterType = mappedStatement.getParameterType();
+        Class<?> parameterTypeClazz = genClass(parameterType);
+        List<ParameterMapping> parameterMappingList = boundSql.getParameterMappingList();
+        for (int i = 0, size = parameterMappingList.size(); i < size; i++) {
+            ParameterMapping parameterMapping = parameterMappingList.get(i);
+            String content = parameterMapping.getContent();
+            // 需判断参数是否为基础类型 不是使用反射 是的话直接传值即可
+            if (isPrimitive(params[0])) {
+                preparedStatement.setObject(i + 1, params[0]);
+            } else {
+                Field field = parameterTypeClazz.getDeclaredField(content);
+                // 设置暴力访问 防止是私有属性
+                field.setAccessible(true);
+                Object obj = field.get(params[0]);
+                preparedStatement.setObject(i + 1, obj);
+            }
+        }
+        return preparedStatement;
+    }
+
+    private boolean isPrimitive(Object obj) {
+        try {
+            return ((Class<?>) obj.getClass().getField("TYPE").get(null)).isPrimitive();
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private Class<?> genClass(String className) throws ClassNotFoundException {

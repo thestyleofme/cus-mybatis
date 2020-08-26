@@ -1,8 +1,6 @@
 package com.github.cus.mybatis.sqlsession;
 
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * <p>
@@ -43,7 +41,7 @@ public interface SqlSession {
      * @param params      params
      * @return int The number of rows affected by the insert.
      */
-    int update(String statementId, Object... params) throws SQLException;
+    int update(String statementId, Object... params) throws Exception;
 
 
     /**

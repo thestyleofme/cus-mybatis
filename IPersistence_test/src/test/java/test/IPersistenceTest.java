@@ -62,14 +62,14 @@ public class IPersistenceTest {
     public void testUpdate() throws Exception {
         User user = new User();
         user.setId(1L);
-        user.setUsername("tom");
+        user.setUsername("coder");
         int update = userDao.update(user);
         Assert.assertEquals(1L, update);
     }
 
     @Test
     public void testDelete() throws Exception {
-        int delete = userDao.delete(2L);
+        int delete = userDao.delete(3L);
         Assert.assertEquals(1L, delete);
     }
 

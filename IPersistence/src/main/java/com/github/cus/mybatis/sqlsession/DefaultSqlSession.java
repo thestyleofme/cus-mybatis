@@ -3,7 +3,6 @@ package com.github.cus.mybatis.sqlsession;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
-import java.sql.SQLException;
 import java.util.List;
 
 import com.github.cus.mybatis.pojo.Configuration;
@@ -44,9 +43,9 @@ public class DefaultSqlSession implements SqlSession {
     }
 
     @Override
-    public int update(String statementId, Object... params) throws SQLException {
+    public int update(String statementId, Object... params) throws Exception {
         MappedStatement mappedStatement = configuration.getMappedStatementMap().get(statementId);
-        return simpleExecutor.update(mappedStatement, params);
+        return simpleExecutor.update(configuration, mappedStatement, params);
     }
 
     @SuppressWarnings("unchecked")
@@ -80,7 +79,7 @@ public class DefaultSqlSession implements SqlSession {
         return (T) proxyInstance;
     }
 
-    private Object doUpdate(String statementId, Object[] args) throws SQLException {
+    private Object doUpdate(String statementId, Object[] args) throws Exception {
         return update(statementId, args);
     }
 

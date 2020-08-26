@@ -30,10 +30,11 @@ public interface Executor {
     /**
      * jdbc 删除/更新/插入
      *
-     * @param ms     MappedStatement
-     * @param params Object...
+     * @param configuration Configuration
+     * @param ms            MappedStatement
+     * @param params        Object...
      * @return int
      * @throws SQLException SQLException
      */
-    int update(MappedStatement ms, Object... params) throws SQLException;
+    int update(Configuration configuration, MappedStatement ms, Object... params) throws Exception;
 }

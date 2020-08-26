@@ -56,3 +56,6 @@ jdbc相关信息，jdbcUrl/driverClassName/username/password
 
 详情请看```IPersistence_test/src/test/java/test/IPersistenceTest.java```
 
+### mybatis常见面试题
+
+[mybatis常见面试题](doc/mybatis常见面试题.md)
