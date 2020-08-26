@@ -10,6 +10,7 @@ import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import com.github.cus.mybatis.config.BoundSql;
 import com.github.cus.mybatis.pojo.Configuration;
@@ -96,7 +97,9 @@ public class SimpleExecutor implements Executor {
         BoundSql boundSql = getBoundSql(sql);
         String sqlText = boundSql.getSqlText();
         logger.debug("sql: {}", sqlText);
-        logger.debug("params: {}", boundSql.getParameterMappingList());
+        logger.debug("params: {}", boundSql.getParameterMappingList().stream()
+                .map(ParameterMapping::getContent)
+                .collect(Collectors.toList()));
         logger.debug("value: {}", params[0]);
         PreparedStatement preparedStatement = connection.prepareStatement(sqlText);
         // 设置参数
