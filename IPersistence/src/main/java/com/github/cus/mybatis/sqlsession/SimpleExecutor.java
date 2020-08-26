@@ -50,7 +50,7 @@ public class SimpleExecutor implements Executor {
             resultSet = preparedStatement.executeQuery();
             // 封装返回结果集
             String resultType = mappedStatement.getResultType();
-            Class<?> resultTypeClazz = genClass(resultType);
+            Class<?> resultTypeClazz = Objects.requireNonNull(genClass(resultType));
             list = new ArrayList<>();
             while (resultSet.next()) {
                 Object result = Thread.currentThread()
@@ -111,13 +111,13 @@ public class SimpleExecutor implements Executor {
             ParameterMapping parameterMapping = parameterMappingList.get(i);
             String content = parameterMapping.getContent();
             // 需判断参数是否为基础类型 不是使用反射 是的话直接传值即可
-            if (isPrimitive(params[0])) {
+            if (params != null && (isPrimitive(params[0]))) {
                 preparedStatement.setObject(i + 1, params[0]);
             } else {
-                Field field = parameterTypeClazz.getDeclaredField(content);
+                Field field = Objects.requireNonNull(parameterTypeClazz).getDeclaredField(content);
                 // 设置暴力访问 防止是私有属性
                 field.setAccessible(true);
-                Object obj = field.get(params[0]);
+                Object obj = field.get(Objects.requireNonNull(params)[0]);
                 preparedStatement.setObject(i + 1, obj);
             }
         }
