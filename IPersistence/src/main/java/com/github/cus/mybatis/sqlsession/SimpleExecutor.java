@@ -10,6 +10,7 @@ import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.github.cus.mybatis.config.BoundSql;
@@ -100,7 +101,7 @@ public class SimpleExecutor implements Executor {
         logger.debug("params: {}", boundSql.getParameterMappingList().stream()
                 .map(ParameterMapping::getContent)
                 .collect(Collectors.toList()));
-        logger.debug("value: {}", params[0]);
+        Optional.ofNullable(params).ifPresent(o -> logger.debug("value: {}", o[0]));
         PreparedStatement preparedStatement = connection.prepareStatement(sqlText);
         // 设置参数
         String parameterType = mappedStatement.getParameterType();
