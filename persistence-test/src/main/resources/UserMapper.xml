@@ -1,0 +1,28 @@
+<mapper namespace="com.github.codingdebugallday.cus.mybatis.dao.IUserDao">
+    <!--sql的唯一标识： namespace.id来组成 statementId-->
+    <select id="findAll" resultType="com.github.codingdebugallday.cus.mybatis.pojo.User">
+        select * from user
+    </select>
+
+    <select id="findByCondition" parameterType="com.github.codingdebugallday.cus.mybatis.pojo.User"
+            resultType="com.github.codingdebugallday.cus.mybatis.pojo.User">
+        select * from user where id = #{id} and username = #{username}
+    </select>
+
+    <insert id="insert" parameterType="com.github.codingdebugallday.cus.mybatis.pojo.User"
+            resultType="java.lang.Integer">
+        insert into user(id,username) values(#{id},#{username})
+    </insert>
+
+    <update id="update" parameterType="com.github.codingdebugallday.cus.mybatis.pojo.User"
+            resultType="java.lang.Integer">
+        update user set username = #{username} where id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long"
+            resultType="java.lang.Integer">
+        delete from user where id = #{id}
+    </delete>
+
+
+</mapper>

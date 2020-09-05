@@ -1,4 +1,4 @@
-# cus_mybatis
+# cus-mybatis
 手写mybatis
 
 ## 原生jdbc的问题分析
@@ -54,7 +54,7 @@ jdbc相关信息，jdbcUrl/driverClassName/username/password
 
 ### 使用示例
 
-详情请看```IPersistence_test/src/test/java/test/IPersistenceTest.java```
+详情请看```persistence-test/src/test/java/test/IPersistenceTest.java```
 
 ### mybatis常见面试题
 
